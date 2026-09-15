@@ -7,6 +7,8 @@ export default defineConfig({
       enabled: true,
       provider: preview(),
       headless: false,
+      // CI defaults this to false, which makes Preview request an unsupported viewport command.
+      ui: true,
       instances: [{ browser: 'chromium' }],
     },
   },
