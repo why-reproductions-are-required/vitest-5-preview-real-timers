@@ -12,22 +12,18 @@ Use Node.js `22.12+` on the `22.x` line, `24.x`, or `26+`.
 git clone https://github.com/why-reproductions-are-required/vitest-5-preview-real-timers.git
 cd vitest-5-preview-real-timers
 npm ci
-npm test
+npx vitest run
 ```
 
-Open the URL that Vitest prints if your browser does not open.
+Open the URL that Vitest prints if your browser does not open. You can also use
+`npm test`, which runs `vitest run`.
 
-For an unattended run, use:
+## GitHub Actions
 
-```sh
-npx playwright install chromium
-npm run reproduce
-```
-
-On Linux, use `npx playwright install --with-deps chromium` if you need browser
-system libraries. The helper opens the Preview page in an external headless
-Chromium browser. Vitest still uses the Preview provider; the helper does not
-replace locators, change timer settings, or patch Vitest.
+The [workflow](./.github/workflows/reproduce.yml) runs `npx vitest run` on Ubuntu.
+It uses `BROWSER=google-chrome` and `BROWSER_ARGS` to open the Preview page in the
+runner's Chrome browser in headless mode. The test still uses the Preview
+provider. There is no wrapper script or Playwright dependency.
 
 ## Expected and actual results
 
@@ -41,9 +37,8 @@ With `5.0.0`, observe this failure at the locator click:
 Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.
 ```
 
-Both commands preserve Vitest's exit code: `1` for the test failure.
-I reproduced this on macOS with Node.js `22.18.0`, Vite `8.3.0`, and
-Playwright `1.63.0` / Chromium `153.0.8010.12`.
+Expect exit code `1` for the test failure. I reproduced this with `npx vitest run`
+on macOS, using Node.js `22.18.0` and Vite `8.3.0`.
 
 ## Related upstream work
 
